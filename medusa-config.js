@@ -1,6 +1,10 @@
 const dotenv = require("dotenv");
 
-let ENV_FILE_NAME = "";
+let ENV_FILE_NAME = ".env";
+try {
+  dotenv.config({ path: process.cwd() + '/' + ENV_FILE_NAME });
+} catch (e) {
+}
 switch (process.env.NODE_ENV) {
   case "production":
     ENV_FILE_NAME = ".env.production";
@@ -29,7 +33,7 @@ const ADMIN_CORS =
 const STORE_CORS = process.env.STORE_CORS || "http://localhost:8000";
 
 const DATABASE_URL =
-  process.env.DATABASE_URL || "postgres://localhost/medusa-starter-default";
+  process.env.DATABASE_URL || "postgres://localhost/medusa-FKB5";
 
 const REDIS_URL = process.env.REDIS_URL || "redis://localhost:6379";
 
@@ -55,7 +59,7 @@ const plugins = [
 ];
 
 const modules = {
-  /*eventBus: {
+  eventBus: {
     resolve: "@medusajs/event-bus-redis",
     options: {
       redisUrl: REDIS_URL
@@ -64,9 +68,10 @@ const modules = {
   cacheService: {
     resolve: "@medusajs/cache-redis",
     options: {
-      redisUrl: REDIS_URL
+      redisUrl: REDIS_URL,
+      ttl: 30
     }
-  },*/
+  },
 };
 
 /** @type {import('@medusajs/medusa').ConfigModule["projectConfig"]} */
@@ -77,7 +82,8 @@ const projectConfig = {
   database_url: DATABASE_URL,
   admin_cors: ADMIN_CORS,
   // Uncomment the following lines to enable REDIS
-  // redis_url: REDIS_URL
+  redis_url: REDIS_URL,
+  worker_mode: process.env.MEDUSA_WORKER_MODE,
 };
 
 /** @type {import('@medusajs/medusa').ConfigModule} */
